@@ -2,62 +2,51 @@
 
 declare(strict_types=1);
 
-namespace Magenest\Test\Setup\Patch\Schema;
+namespace Scandiweb\Test\Setup\Patch\Schema;
 
-use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\Setup\Patch\SchemaPatchInterface;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
-
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Type;
 
 class AddProduct implements SchemaPatchInterface
 {
-   private $moduleDataSetup;
+    public static function getDependencies()
+    {
+        return [];
+    }
 
+    public function getAliases()
+    {
+        return [];
+    }
 
-   public function __construct(
+    public function apply()
+    {
+        $objectManager = ObjectManager::getInstance();
+        $productRepository = $objectManager->get(ProductRepositoryInterface::class);
 
-       ModuleDataSetupInterface $moduleDataSetup
-   ) 
-   {
-       $this->moduleDataSetup = $moduleDataSetup;
-   }
+        $product = $objectManager->create(Product::class);
+        $product->setTypeId(Type::TYPE_SIMPLE)
+            ->setAttributeSetId(4)
+            ->setWebsiteIds([1])
+            ->setName('Tricep Rope')
+            ->setSku('Tricep-Rope')
+            ->setPrice(20)
+            ->setWeight(1)
+            ->setShortDescription('Its a tricep rope')
+            ->setTaxClassId(0)
+            ->setDescription('Its a tricep rope')
+            ->setStockData([
+                'use_config_manage_stock' => 0,
+                'manage_stock' => 1,
+                'is_in_stock' => 1,
+                'qty' => 100
+            ])
+            ->setVisibility(Product\Visibility::VISIBILITY_BOTH)
+            ->setStatus(Status::STATUS_ENABLED)
+            ->setCategoryIds([3]);
 
-
-   public static function getDependencies()
-   {
-       return [];
-   }
-
-
-   public function getAliases()
-   {
-       return [];
-   }
-
-
-   public function apply()
-   {
-		$this->moduleDataSetup->getConnection()->startSetup();
-
-        $product = $this->productFactory->create();
-        $product->setTypeId('simple')
-        ->setAttributeSetId(4)
-        ->setName('Tricep Rope')
-        ->setSku('Tricep-Rope')
-        ->setPrice(20.00)
-        ->setDescription('Its a tricep rope')
-        ->setVisibility(4)
-        ->setStatus(1)
-        ->setCategoryIds([3])
-        ->setWebsiteIds([1])
-        ->setStockData([
-            'use_config_manage_stock' => 0,
-            'manage_stock' => 1,
-            'is_in_stock' => 1,
-            'qty' => 100
-        ])
-        ->save();
-
-        $this->moduleDataSetup->getConnection()->endSetup();
-   }
+        $productRepository->save($product);
+    }
 }
