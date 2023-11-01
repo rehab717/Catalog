@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare(strict_types=1);
 
@@ -11,22 +11,60 @@ use Magento\Catalog\Model\Product\Type;
 
 class AddProduct implements SchemaPatchInterface
 {
-    public static function getDependencies()
+    /**
+     * @var ModuleDataSetupInterface
+     */
+
+
+    protected ModuleDataSetupInterface $setup;
+
+    /**
+     * @var ProductInterfaceFactory
+     */
+
+
+    protected ProductInterfaceFactory $productInterfaceFactory;
+
+    /**
+     * @param ModuleDataSetupInterface $setup
+     * @param ProductInterfaceFactory $productInterfaceFactory
+     */
+    public function __construct(
+        ModuleDataSetupInterface $setup,
+        ProductInterfaceFactory $productInterfaceFactory
+    ) {
+        $this->setup = $setup;
+        $this->productInterfaceFactory = $productInterfaceFactory;
+    }
+
+    public static function getDependencies(): array
     {
+        /**
+         * Get the dependencies of this patch.
+         *
+         * @return array
+         */
         return [];
     }
 
-    public function getAliases()
+    public function getAliases(): array
     {
+        /**
+         * Get the aliases of this patch.
+         *
+         * @return array
+         */
         return [];
     }
 
-    public function apply()
+    /**
+     * Execute the patch.
+     *
+     * @return void
+     */
+    public function execute(): void
     {
-        $objectManager = ObjectManager::getInstance();
-        $productRepository = $objectManager->get(ProductRepositoryInterface::class);
-
-        $product = $objectManager->create(Product::class);
+        $product = $this->productInterfaceFactory->create();
         $product->setTypeId(Type::TYPE_SIMPLE)
             ->setAttributeSetId(4)
             ->setWebsiteIds([1])
@@ -37,16 +75,11 @@ class AddProduct implements SchemaPatchInterface
             ->setShortDescription('Its a tricep rope')
             ->setTaxClassId(0)
             ->setDescription('Its a tricep rope')
-            ->setStockData([
-                'use_config_manage_stock' => 0,
-                'manage_stock' => 1,
-                'is_in_stock' => 1,
-                'qty' => 100
-            ])
+            ->setSourceItem('qty', 100)
             ->setVisibility(Product\Visibility::VISIBILITY_BOTH)
-            ->setStatus(Status::STATUS_ENABLED)
+            ->setStatus(Product\Status::STATUS_ENABLED)
             ->setCategoryIds([3]);
 
-        $productRepository->save($product);
+        $this->setup->save($product);
     }
 }
