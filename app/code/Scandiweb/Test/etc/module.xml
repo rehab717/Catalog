@@ -4,7 +4,7 @@
 	xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
     <module name="Scandiweb_Catalogue">
 				<patch>
-					<data>Scandiweb_Test::AddProduct</data>
+					<data>Scandiweb_Test</data>
 				</patch>
 		</module>
 </config>
