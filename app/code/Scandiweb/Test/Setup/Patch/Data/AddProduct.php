@@ -4,36 +4,100 @@ declare(strict_types=1);
 
 namespace Scandiweb\Test\Setup\Patch\Data;
 
+use Magento\Catalog\Api\CategoryLinkManagementInterface;
+use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Type;
+use Magento\Catalog\Model\Product\Visibility;
+use Magento\Eav\Setup\EavSetup;
+use Magento\Framework\App\State;
+use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\InventoryApi\Api\Data\SourceItemInterface;
+use Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory;
+use Magento\InventoryApi\Api\SourceItemsSaveInterface;
 
 class AddProduct implements DataPatchInterface
 {
     /**
      * @var ModuleDataSetupInterface
      */
-
-    protected ModuleDataSetupInterface $setup;
+    protected $setup;
 
     /**
      * @var ProductInterfaceFactory
      */
+    protected $productInterfaceFactory;
 
-    protected ProductInterfaceFactory $productInterfaceFactory;
+    /**
+     * @var ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
+     * @var State
+     */
+    protected $appState;
+
+    /**
+     * @var EavSetup
+     */
+    protected $eavSetup;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
+     * @var SourceItemInterfaceFactory
+     */
+    protected $sourceItemFactory;
+
+    /**
+     * @var SourceItemsSaveInterface
+     */
+    protected $sourceItemsSaveInterface;
+
+    /**
+     * @var CategoryLinkManagementInterface
+     */
+    protected $categoryLink;
 
     /**
      * @param ModuleDataSetupInterface $setup
      * @param ProductInterfaceFactory $productInterfaceFactory
+     * @param ProductRepositoryInterface $productRepository
+     * @param State $appState
+     * @param EavSetup $eavSetup
+     * @param StoreManagerInterface $storeManager
+     * @param SourceItemInterfaceFactory $sourceItemFactory
+     * @param SourceItemsSaveInterface $sourceItemsSaveInterface
+     * @param CategoryLinkManagementInterface $categoryLink
      */
     public function __construct(
         ModuleDataSetupInterface $setup,
-        ProductInterfaceFactory $productInterfaceFactory
+        ProductInterfaceFactory $productInterfaceFactory,
+        ProductRepositoryInterface $productRepository,
+        State $appState,
+        EavSetup $eavSetup,
+        StoreManagerInterface $storeManager,
+        SourceItemInterfaceFactory $sourceItemFactory,
+        SourceItemsSaveInterface $sourceItemsSaveInterface,
+        CategoryLinkManagementInterface $categoryLink
     ) {
         $this->setup = $setup;
         $this->productInterfaceFactory = $productInterfaceFactory;
+        $this->productRepository = $productRepository;
+        $this->appState = $appState;
+        $this->eavSetup = $eavSetup;
+        $this->storeManager = $storeManager;
+        $this->sourceItemFactory = $sourceItemFactory;
+        $this->sourceItemsSaveInterface = $sourceItemsSaveInterface;
+        $this->categoryLink = $categoryLink;
     }
 
     /**
