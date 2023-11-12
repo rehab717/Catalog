@@ -23,52 +23,46 @@ use Magento\InventoryApi\Api\SourceItemsSaveInterface;
 class AddProduct implements DataPatchInterface
 {
     /**
-     * @var ModuleDataSetupInterface
-     */
-    protected $setup;
-
-    /**
      * @var ProductInterfaceFactory
      */
-    protected $productInterfaceFactory;
+    protected ProductInterfaceFactory $productInterfaceFactory;
 
     /**
      * @var ProductRepositoryInterface
      */
-    protected $productRepository;
+    protected ProductRepositoryInterface $productRepository;
 
     /**
      * @var State
      */
-    protected $appState;
+    protected State $appState;
 
     /**
      * @var EavSetup
      */
-    protected $eavSetup;
+    protected EavSetup $eavSetup;
 
     /**
      * @var StoreManagerInterface
      */
-    protected $storeManager;
+    protected StoreManagerInterface $storeManager;
 
     /**
      * @var SourceItemInterfaceFactory
      */
-    protected $sourceItemFactory;
+    protected SourceItemInterfaceFactory $sourceItemFactory;
 
     /**
      * @var SourceItemsSaveInterface
      */
-    protected $sourceItemsSaveInterface;
+    protected SourceItemsSaveInterface $sourceItemsSaveInterface;
 
     /**
      * @var CategoryLinkManagementInterface
      */
-    protected $categoryLink;
+    protected CategoryLinkManagementInterface $categoryLink;
 
     /**
-     * @param ModuleDataSetupInterface $setup
      * @param ProductInterfaceFactory $productInterfaceFactory
      * @param ProductRepositoryInterface $productRepository
      * @param State $appState
@@ -79,7 +73,6 @@ class AddProduct implements DataPatchInterface
      * @param CategoryLinkManagementInterface $categoryLink
      */
     public function __construct(
-        ModuleDataSetupInterface $setup,
         ProductInterfaceFactory $productInterfaceFactory,
         ProductRepositoryInterface $productRepository,
         State $appState,
@@ -89,7 +82,6 @@ class AddProduct implements DataPatchInterface
         SourceItemsSaveInterface $sourceItemsSaveInterface,
         CategoryLinkManagementInterface $categoryLink
     ) {
-        $this->setup = $setup;
         $this->productInterfaceFactory = $productInterfaceFactory;
         $this->productRepository = $productRepository;
         $this->appState = $appState;
